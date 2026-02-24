@@ -30,3 +30,24 @@ In order to request data:
     response = socket.recv_json()
     ````
 
+```mermaid
+    sequenceDiagram
+        title Restaurant Budget Tracker Microservice
+
+        participant A as Expense Publishing
+        participant ZMQ as ZeroMQ Pipe
+        participant Service as Restaurant Budget Tracker Microservice
+        participant B as Request Total
+
+        %% Publish Expense
+        A->>ZMQ: restaurant_id\nrestaurant_name\nuser_id\namount_spent
+        ZMQ->>Service: Forward Expense Data
+        Service->>Service: Store Expense\nUpdate Total
+
+        %% Request Total
+        B->>ZMQ: user_id
+        ZMQ->>Service: Request Total for user_id
+        Service->>Service: Calculate / Retrieve Total
+        Service-->>ZMQ: total_amount
+        ZMQ-->>B: Display total_amount
+```
